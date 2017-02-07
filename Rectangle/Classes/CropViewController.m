@@ -114,7 +114,7 @@
 }
 
 -(void) selectAllArea {
-    static float margin = 00.0f;
+    static float margin = 10.0f;
     float absoluteHeight = self.originalImage.size.height / _detectedImage.frame.size.height;
     float absoluteWidth = self.originalImage.size.width / _detectedImage.frame.size.width;
     
