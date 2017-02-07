@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'Rectangle_Example' do
+  pod 'Rectangle', :path => '../'
+
+  target 'Rectangle_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
