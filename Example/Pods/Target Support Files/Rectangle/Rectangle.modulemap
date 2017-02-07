@@ -1,0 +1,6 @@
+framework module Rectangle {
+  umbrella header "Rectangle-umbrella.h"
+
+  export *
+  module * { export * }
+}

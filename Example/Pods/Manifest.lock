@@ -1,0 +1,16 @@
+PODS:
+  - Rectangle (0.1.0)
+
+DEPENDENCIES:
+  - Rectangle (from `../`)
+
+EXTERNAL SOURCES:
+  Rectangle:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Rectangle: 97e55c9abc8fb3f383385780280a28f9ae6b1d40
+
+PODFILE CHECKSUM: f76ddb37c13a01a1e826b8a92216b67d3679d253
+
+COCOAPODS: 1.2.0

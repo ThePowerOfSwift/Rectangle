@@ -1,0 +1,22 @@
+{
+  "name": "Rectangle",
+  "version": "0.1.0",
+  "summary": "A short description of Rectangle.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/info@mihailsalari.com/Rectangle",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "info@mihailsalari.com": "thepowerofswift@mihailsalari.com"
+  },
+  "source": {
+    "git": "https://github.com/info@mihailsalari.com/Rectangle.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "Rectangle/Classes/**/*"
+}
