@@ -10,14 +10,18 @@
 #import "FIImageRectangleDetector.h"
 #import "FIConstantValues.h"
 
-@interface CropViewController ()
-    
-    @end
+@interface CropViewController () {
+    BOOL first;
+}
+
+@end
 
 @implementation CropViewController
-    
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    first = YES;
     
     croppedImage = [[CIImage alloc] initWithImage:self.originalImage];
     
@@ -34,33 +38,17 @@
     
     static float margin = 0.0;
     
-    _detectedImage = [[UIImageView alloc] initWithFrame:CGRectMake(margin, [FIConstantValues pictureSelectorHeaderViewHeight] + margin, self.view.frame.size.width - margin * 2, self.view.frame.size.height -[FIConstantValues pictureSelectorFooterViewHeight] -[FIConstantValues pictureSelectorHeaderViewHeight] - margin * 2)];
+    _detectedImage = [[UIImageView alloc] initWithFrame:CGRectMake(margin, margin, self.view.frame.size.width - margin * 2, self.view.frame.size.height - margin * 2)];
     _detectedImage.translatesAutoresizingMaskIntoConstraints = NO;
     _detectedImage.userInteractionEnabled = YES;
     [_detectedImage setImage:self.originalImage];
     [self.view addSubview:_detectedImage];
     
-    
-    
-    
-    if (_detectedRectangleFeature) {
-        
-        [self magnetActivated];
-        
-    }else{
-        
-        [self magnetDeactivated];
-    }
-    
-    [self initializeHeaderView];
-    [self initializeFooterView];
-    [self setupUI];
-    
     NSLayoutConstraint* imgTop = [NSLayoutConstraint constraintWithItem:_detectedImage
                                                               attribute:NSLayoutAttributeTop
                                                               relatedBy:NSLayoutRelationEqual
-                                                                 toItem:_headerView
-                                                              attribute:NSLayoutAttributeBottom
+                                                                 toItem:self.view
+                                                              attribute:NSLayoutAttributeTop
                                                              multiplier:1.0 constant:0.0];
     NSLayoutConstraint* imgLeft = [NSLayoutConstraint constraintWithItem:_detectedImage
                                                                attribute:NSLayoutAttributeLeft
@@ -77,43 +65,49 @@
     NSLayoutConstraint* imgBtm = [NSLayoutConstraint constraintWithItem:_detectedImage
                                                               attribute:NSLayoutAttributeBottom
                                                               relatedBy:NSLayoutRelationEqual
-                                                                 toItem:_footerView
-                                                              attribute:NSLayoutAttributeTop
+                                                                 toItem:self.view
+                                                              attribute:NSLayoutAttributeBottom
                                                              multiplier:1.0 constant:0.0];
     
     NSArray* imgConstraints = [NSArray arrayWithObjects:imgTop, imgBtm, imgLeft, imgRight, nil];
     
     [self.view addConstraints:imgConstraints];
-    
-    
 }
 
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    if (first) {
+        first = NO;
+        if (_detectedRectangleFeature) {
+            [self magnetActivated];
+        }else{
+            [self magnetDeactivated];
+        }
+    }
+}
 
--(void) findRectangleInImage {
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void) findRectangleInImage {
     if (_detectedRectangleFeature) {
-        
         [self magnetActivated];
-        
     }else{
-        
         [self magnetDeactivated];
     }
 }
 
--(void) setupUI {}
-
--(void) findRectangle {
+- (void) findRectangle {
     if (_detectedRectangleFeature) {
-        
         [self magnetActivated];
-        
     }else{
-        
         [self magnetDeactivated];
     }
 }
 
--(void) selectAllArea {
+- (void) selectAllArea {
     static float margin = 10.0f;
     float absoluteHeight = self.originalImage.size.height / _detectedImage.frame.size.height;
     float absoluteWidth = self.originalImage.size.width / _detectedImage.frame.size.width;
@@ -166,8 +160,7 @@
     [_overlayView initializeSubView];
 }
 
--(void)magnetActivated{
-    
+- (void)magnetActivated {
     float absoluteHeight = self.originalImage.size.height / _detectedImage.frame.size.height;
     float absoluteWidth = self.originalImage.size.width / _detectedImage.frame.size.width;
     
@@ -217,11 +210,9 @@
     _overlayView.bottomRightPath = CGPointMake(_detectedRectangleFeature.bottomRight.x/absoluteWidth,(_detectedImage.frame.size.height -  _detectedRectangleFeature.bottomRight.y/ absoluteHeight));
     
     [_overlayView initializeSubView];
-    
 }
-    
--(void)magnetDeactivated{
-    
+
+- (void)magnetDeactivated {
     static float margin = 60.0f;
     float absoluteHeight = self.originalImage.size.height / _detectedImage.frame.size.height;
     float absoluteWidth = self.originalImage.size.width / _detectedImage.frame.size.width;
@@ -260,7 +251,6 @@
         NSArray* imgConstraints = [NSArray arrayWithObjects:imgTop, imgBtm, imgLeft, imgRight, nil];
         
         [_detectedImage addConstraints:imgConstraints];
-        
     }
     
     _overlayView.absoluteHeight = absoluteHeight;
@@ -273,137 +263,42 @@
     
     [_overlayView initializeSubView];
 }
-    
-    
--(void)initializeHeaderView{
-    
-    _headerView = [[UIView alloc] initWithFrame:CGRectZero];
-    [_headerView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [_headerView setBackgroundColor:[FIConstantValues standartBackgroundColor]];
-    [self.view addSubview:_headerView];
-    
-    NSLayoutConstraint* headerTop = [NSLayoutConstraint constraintWithItem:_headerView
-                                                                 attribute:NSLayoutAttributeTop
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.view
-                                                                 attribute:NSLayoutAttributeTop
-                                                                multiplier:1.0 constant:0.0];
-    NSLayoutConstraint* headerHeight = [NSLayoutConstraint constraintWithItem:_headerView
-                                                                    attribute:NSLayoutAttributeHeight
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:nil
-                                                                    attribute:NSLayoutAttributeNotAnAttribute
-                                                                   multiplier:1.0 constant:[FIConstantValues pictureSelectorHeaderViewHeight]];
-    NSLayoutConstraint* headerLeft = [NSLayoutConstraint constraintWithItem:_headerView
-                                                                  attribute:NSLayoutAttributeLeft
-                                                                  relatedBy:NSLayoutRelationEqual
-                                                                     toItem:self.view
-                                                                  attribute:NSLayoutAttributeLeft
-                                                                 multiplier:1.0 constant:0.0];
-    NSLayoutConstraint* headerRight = [NSLayoutConstraint constraintWithItem:_headerView
-                                                                   attribute:NSLayoutAttributeRight
-                                                                   relatedBy:NSLayoutRelationEqual
-                                                                      toItem:self.view
-                                                                   attribute:NSLayoutAttributeRight
-                                                                  multiplier:1.0 constant:0.0];
-    
-    NSArray* headerViewConstraints = [NSArray arrayWithObjects:headerTop, headerHeight, headerLeft, headerRight, nil];
-    
-    [self.view addConstraints:headerViewConstraints];
-}
-    
--(void)initializeFooterView{
-    
-    _footerView = [[UIView alloc] initWithFrame:CGRectZero];
-    [_footerView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [_footerView setBackgroundColor:[FIConstantValues standartBackgroundColor]];
-    [self.view addSubview:_footerView];
-    
-    NSLayoutConstraint* footerBottom = [NSLayoutConstraint constraintWithItem:_footerView
-                                                                    attribute:NSLayoutAttributeBottom
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.view
-                                                                    attribute:NSLayoutAttributeBottom
-                                                                   multiplier:1.0 constant:0.0];
-    NSLayoutConstraint* footerHeight = [NSLayoutConstraint constraintWithItem:_footerView
-                                                                    attribute:NSLayoutAttributeHeight
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:nil
-                                                                    attribute:NSLayoutAttributeNotAnAttribute
-                                                                   multiplier:1.0 constant:[FIConstantValues pictureSelectorFooterViewHeight]];
-    NSLayoutConstraint* footerLeft = [NSLayoutConstraint constraintWithItem:_footerView
-                                                                  attribute:NSLayoutAttributeLeft
-                                                                  relatedBy:NSLayoutRelationEqual
-                                                                     toItem:self.view
-                                                                  attribute:NSLayoutAttributeLeft
-                                                                 multiplier:1.0 constant:0.0];
-    NSLayoutConstraint* footerRight = [NSLayoutConstraint constraintWithItem:_footerView
-                                                                   attribute:NSLayoutAttributeRight
-                                                                   relatedBy:NSLayoutRelationEqual
-                                                                      toItem:self.view
-                                                                   attribute:NSLayoutAttributeRight
-                                                                  multiplier:1.0 constant:0.0];
-    
-    NSArray* footerViewConstraints = [NSArray arrayWithObjects:footerBottom, footerHeight, footerLeft, footerRight, nil];
-    [self.view addConstraints:footerViewConstraints];
-}
-    
--(void)autoRectangleDetect{
-    
+
+- (void)autoRectangleDetect{
     if (_magnetEnabled) {
-        
         [self magnetDeactivated];
         _magnetEnabled = NO;
-    }else{
-        
-        if (_detectedRectangleFeature)
-        {
-            
+    }else {
+        if (_detectedRectangleFeature) {
             [self magnetActivated];
             _magnetEnabled = YES;
             
-        }else{
-            
+        }else {
             UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:@"Warning" message:@"We can't detect document please retake." delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alertView show];
             _magnetButton.enabled = NO;
             _magnetEnabled = NO;
         }
-        
     }
 }
-    
--(void)confirmButtonClicked {
-    
+
+- (void)confirmButtonClicked {
     [self.delegate cropperViewdidCropped:[_overlayView cropImage:self.originalImage] cropVC:self];
     [self dismissViewControllerAnimated:NO completion:nil];
-    
-    
 }
 
--(UIImage *) getCroppedImage {
+- (UIImage *) getCroppedImage {
     return [_overlayView cropImage:self.originalImage];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-    
-    
 - (BOOL) shouldAutorotate {
-    
     if (_detectedRectangleFeature) {
-        
         [self magnetActivated];
-        
-    }else{
-        
+    }else {
         [self magnetDeactivated];
     }
-    
     return YES;
 }
-    
-    
+
 @end
+
